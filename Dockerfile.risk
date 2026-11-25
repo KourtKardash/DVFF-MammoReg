@@ -1,0 +1,27 @@
+# Risk-prediction image: PyTorch 2.5.1, CUDA 12.1.
+# Build from the repository root:
+#   docker build -f Dockerfile.risk -t dvff-risk:cu121 .
+#
+# Images, affine matrices, the CSV, and weights stay outside the image and are
+# mounted at run time. REPO_ROOT is the directory that contains Methods/.
+
+FROM pytorch/pytorch:2.5.1-cuda12.1-cudnn9-devel
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/opt/lmvnet/src \
+    REPO_ROOT=/opt/registration \
+    VXM_BACKEND=pytorch \
+    WANDB_MODE=disabled
+
+WORKDIR /opt/lmvnet
+
+COPY risk_prediction/LMV-Net/requirements.txt /opt/lmvnet/requirements.txt
+RUN pip install --no-cache-dir -r /opt/lmvnet/requirements.txt \
+    && pip install --no-cache-dir antspyx ml_collections==1.1.0 pystrum==0.4 \
+    && pip install --no-cache-dir --no-deps timm==0.9.16
+
+COPY risk_prediction/LMV-Net /opt/lmvnet
+COPY Methods /opt/registration/Methods
+
+WORKDIR /opt/lmvnet/src

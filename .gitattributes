@@ -1,0 +1,4 @@
+# No large binaries are tracked in this repository. Model weights, cached ANTs
+# transforms and datasets are produced or downloaded locally; see README.
+* text=auto eol=lf
+*.ipynb -diff

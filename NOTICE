@@ -1,0 +1,94 @@
+Dual-View Feature Fusion for Longitudinal Mammography Registration
+Copyright [YYYY] [COPYRIGHT HOLDER — placeholder, see LICENSE]
+
+This product includes software developed by third parties. The components
+listed below are vendored into this repository, in some cases with local
+modifications, and remain under their original licenses. Full license texts are
+reproduced in THIRD_PARTY_LICENSES.
+
+--------------------------------------------------------------------------------
+VoxelMorph
+  Location in this repository: Methods/voxelmorph/
+  Upstream:  https://github.com/voxelmorph/voxelmorph
+  License:   Apache License 2.0
+  Changes:   adapted from 3D to 2D mammography input; training entry point and
+             data loading replaced for the longitudinal pair setting.
+
+TransMorph
+  Location in this repository: Methods/transmorph/
+  Upstream:  https://github.com/junyuchen245/TransMorph_Transformer_for_Medical_Image_Registration
+  License:   MIT License, Copyright (c) 2021 Junyu Chen
+  Changes:   adapted from 3D to 2D mammography input; deformation
+             regularization weight retuned as described in the supplementary
+             material of the accompanying paper.
+
+IDIR (implicit deformable image registration)
+  Location in this repository: Methods/IDIR/
+  Upstream:  https://github.com/MIAGroupUT/IDIR
+  License:   MIT License, Copyright (c) 2022 Mathematics of Imaging & AI Group
+  Changes:   adapted from 3D to 2D; per-pair optimization settings as described
+             in the supplementary material.
+
+MammoRegNet (Longitudinal Mammogram Alignment)
+  Location in this repository: Methods/MammoRegNet/, and the encoder/decoder
+             stages reused by Methods/DVFF/
+  Upstream:  https://github.com/sot176/Longitudinal_Mammogram_Alignment
+  License:   MIT License, Copyright (c) 2025 Solveig Thrun
+  Changes:   the channel order in the Jacobian-determinant penalty differs from
+             upstream; see the docstring of ``NJD`` in
+             Methods/MammoRegNet/train/losses_mammoregnet.py. The decoder can
+             optionally use a deformable head at the coarsest level
+             (``coarse_affine=False``).
+
+Mirai / OncoNet
+  Location in this repository: risk_prediction/LMV-Net/src/onconet/
+  Upstream:  https://github.com/yala/Mirai
+  Commit:    3904a9eaca046378a194b1eb8c62fa32f45ce83b
+             (54 of the 70 vendored files are byte-identical to that commit; the
+             remainder are listed under Changes below or were modified upstream
+             before vendoring)
+  License:   MIT License, Copyright (c) 2021 Massachusetts Institute of
+             Technology and Massachusetts General Hospital
+  Changes:   modules not reachable from this pipeline were removed: dataset
+             loaders for unrelated clinical collections, unused architectures,
+             and two modules that are not importable under Python 3. The
+             vendored tree is retained because the Mirai image encoder is
+             distributed as a pickled model and needs these modules to load.
+
+Mirai model weights
+  NOT redistributed with this repository. Obtain them from the Mirai authors.
+  File name: mgh_mammo_MIRAI_Base_May20_2019.p
+  Size:      50,651,758 bytes
+  SHA-256:   e66261f434474686462e5c7035de37452f47e4e7cc8831086be19397383e8af3
+  The hash identifies the exact weights used for the results reported in the
+  paper. A reader who obtains the file from another source can verify it with
+  `sha256sum` regardless of how the download link may have moved.
+  Licensing: the Mirai README states that "Mirai (the trained model) and all
+  code are released under the MIT license", so the same MIT terms cover the
+  weights and the code. The weights are nevertheless distributed separately
+  from the source repository, and whatever terms apply at the point of download
+  are the ones the reader has agreed to; check them there rather than relying
+  on this file.
+
+Longitudinal risk-prediction pipeline
+  Location in this repository: risk_prediction/LMV-Net/
+  Upstream:  https://github.com/sot176/Mammogram_Alignment_Study_Risk_Prediction
+  Commit:    670f666f56db0fc81afc42028b4a9f707631511c
+  License:   MIT License, Copyright (c) 2025 sot176
+  Changes:   src/asymmetry_model/ and src/models/mammoregnet.py are vendored
+             unmodified. The training, evaluation and utility modules are
+             modified. The CSAW-CC data loaders, the registration backends in
+             src/registration/, the stabilized risk head in src/models/, and
+             the image-level alignment described in the paper are new here; the
+             loader for the collection not used in this work was removed.
+
+Curvilinear coordinate method
+  Location in this repository: Methods/CurCoords/
+  This is an independent re-implementation. No official implementation of the
+  method exists; no third-party code is vendored.
+
+Advanced Normalization Tools (ANTs)
+  Used through the ``antspyx`` Python package as a runtime dependency
+  (Methods/Affine/, Methods/SyN/, risk_prediction/). ANTs is not vendored;
+  see https://github.com/ANTsX/ANTsPy for its license.
+--------------------------------------------------------------------------------
